@@ -37,7 +37,7 @@ class Oficina {
         const oficinaDatada = { nome, email, cpf_cnpj, senha, estado, cidade, cep, bairro, logradouro, complemento, telefone, data_cad };
 
         //Verifica se existe alguma oficina cadastrada com o email informado
-        let sql = `SELECT * FROM OFICINAS WHERE OFICINAS.EMAIL = ?`;
+        let sql = `SELECT * FROM oficinas WHERE oficinas.EMAIL = ?`;
 
         conexao.query(sql, [email],(erro, resultados) => {
             if (erro) {
