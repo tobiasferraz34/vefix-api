@@ -47,7 +47,7 @@ class Oficina {
                     res.status(400).json({ msg: "Já existe uma oficina cadastrada, com o email informado.", status: 400 })
                 } else {
                     //Cadastro das oficinas
-                    sql = `INSERT INTO OFICINAS SET ?`;
+                    sql = `INSERT INTO oficinas SET ?`;
                     conexao.query(sql, oficinaDatada, (erro, resultados) => {
                         if (erro) {
                             res.status(400).json(erro);
