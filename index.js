@@ -12,10 +12,7 @@ conexao.connect(erro => {
         Tabelas.init(conexao);
         const app = customExpress();
 
-        const PORT = 19333 || 4000;
-
-
-        app.listen({PORT}, () => console.log(`Servidor rodando na porta ${PORT}`));
+        app.listen(4000, () => console.log("Servidor rodando na porta 4000"));
     }
 })
 
