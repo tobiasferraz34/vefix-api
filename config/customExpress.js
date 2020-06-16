@@ -5,10 +5,13 @@ const cors = require('cors');
 //FUNÇÃO RESPONSÁVEL POR CONFIGURAR O APP DO EXPRESS
 module.exports = () => {
     const app = express();
-    app.use(cors({origin: '*'}))
-
     app.use(bodyParser.urlencoded({extended: true}))
     app.use(bodyParser.json())
+    app.use(cors({ origin: '*', // client (todo mundo pode acessar)
+
+        optionsSuccessStatus: 200
+        
+        }))
 
     consign()
         .include('controllers')
