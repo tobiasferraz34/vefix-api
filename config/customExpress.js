@@ -5,8 +5,8 @@ const cors = require('cors');
 //FUNÇÃO RESPONSÁVEL POR CONFIGURAR O APP DO EXPRESS
 module.exports = () => {
     const app = express();
-    app.use(cors())
-    
+    app.use(cors({origin: '*'}))
+
     app.use(bodyParser.urlencoded({extended: true}))
     app.use(bodyParser.json())
 
