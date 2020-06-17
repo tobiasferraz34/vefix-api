@@ -5,7 +5,7 @@ const Tabelas = require('./infraestrutura/tabelas');
 
 Tabelas.init(conexao);
 const app = customExpress();
-var port = 3000;
+var port = process.env.PORT || 3000;
 app.listen(port, () => console.log("Servidor rodando na porta 3000"));
 
 
