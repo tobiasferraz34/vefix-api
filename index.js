@@ -1,3 +1,9 @@
+require("dotenv-safe").config({
+    allowEmptyValues: true
+});
+
+console.log(process.env.DB_PASS);
+
 //A responsabilidade desse arquivo é subir o servidor
 const customExpress = require('./config/customExpress');
 const conexao = require('./infraestrutura/conexao');
