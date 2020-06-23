@@ -5,7 +5,7 @@ const cors = require('cors');
 //FUNÇÃO RESPONSÁVEL POR CONFIGURAR O APP DO EXPRESS
 module.exports = () => {
     const app = express();
-    app.use(cors({ origin: 'http://localhost:3001'}))
+    app.use(cors({ origin: 'http://vefixapp-com-br.umbler.net'}))
 
     app.use(bodyParser.urlencoded({extended: true}))
     app.use(bodyParser.json())
