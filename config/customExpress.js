@@ -8,7 +8,7 @@ module.exports = () => {
 
     //http://localhost:3000
     //origin: 'http://vefixapp-com-br.umbler.net'
-    app.use(cors({ origin: 'http://vefixapp-com-br.umbler.net'}))
+    app.use(cors({ origin: 'http://vefixapp.com.br'}))
 
     app.use(bodyParser.urlencoded({extended: true}))
     app.use(bodyParser.json())
