@@ -10,7 +10,6 @@ class Veiculo {
             || !municipio, !! !placa || !situacao || !uf) {
             res.status(400).json({ status: 400, msg: "Por favor, preencher todos os campos" });
         } else {
-
             const data_cad = moment().format('YYYY-MM-DD hh:mm:ss');
             const veiculoDatado = { ano, anoModelo, chassi, cor, marca, modelo, municipio, placa, situacao, uf, data_cad }
 
@@ -19,7 +18,6 @@ class Veiculo {
                 if (erro) {
                     res.status(400).json({ status: 400, msg: erro });
                 } else {
-
                     if (resultados.length > 0) {    
                         res.status(400).json({ status: 400, msg: "Já existem um veiculo cadastrado, com a placa informada." });
                     } else {

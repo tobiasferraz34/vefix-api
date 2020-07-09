@@ -1,6 +1,5 @@
 const moment = require('moment');
 const conexao = require('../infraestrutura/conexao');
-
 let jwt = require('jsonwebtoken');
 
 class Usuario {
@@ -59,7 +58,7 @@ class Usuario {
                         if (erro) {
                             res.status(400).json(erro);
                         } else {
-                            res.status(201).json({ status: 201, msg: "Cadastrado com sucesso" });
+                            res.status(201).json({ status: 200, msg: "Cadastrado com sucesso" });
                         }
                     });
                 }
