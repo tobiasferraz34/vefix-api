@@ -4,39 +4,6 @@ let jwt = require('jsonwebtoken');
 
 class Usuario {
 
-    login(email, senha, res) {
-        const sql = `select * from usuarios where usuarios.email = ? and usuarios.senha = ?`
-        conexao.query(sql, [email, senha], (erro, resultados) => {
-            if (erro) {
-                res.status(400).json(erro);
-            } else {
-                if (resultados.length > 0) {
-                    let id = '';
-                    let nome = '';
-                    let email = '';
-                    let uf = '';
-                    let cidade = ';'
-
-                    resultados.map(usuario => {
-                        id = usuario.id
-                        nome = usuario.nome
-                        email = usuario.email
-                        uf = usuario.uf
-                        cidade = usuario.cidade
-                    });
-
-                    const token = jwt.sign({ id }, process.env.SECRET, {
-                        expiresIn: 300 // expires in 5min
-                    });
-                    res.status(201).send({ auth: true, token: token, id: id, nome: nome, email: email, uf: uf, cidade: cidade });
-                } else {
-                    res.status(400).json("Verifique se o seu email ou senha estão corretos!");
-                }
-
-            }
-        });
-    }
-
     adiciona(usuario, res) {
         const data_cad = moment().format('YYYY-MM-DD hh:mm:ss');
 

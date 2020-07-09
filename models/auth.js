@@ -9,7 +9,7 @@ class Auth {
 
         //Cliente
         if (parseInt(nivelAcesso) === 1) {
-            const sql = `select * from Usuarios where Usuarios.email = ? and Usuarios.senha = ?`
+            const sql = `select * from usuarios where usuarios.email = ? and usuarios.senha = ?`
             conexao.query(sql, [email, senha], (erro, resultados) => {
                 if (erro) {
                     res.status(400).json(erro);
@@ -71,7 +71,7 @@ class Auth {
 
         //Administrador
         if (parseInt(nivelAcesso) === 3) {
-            res.status(400).json({ status: 400, msg: "Em construção!" });
+            res.status(400).json({ status: 400, msg: "Em Obras!" });
         }
 
 
