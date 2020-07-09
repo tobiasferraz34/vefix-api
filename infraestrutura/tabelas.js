@@ -4,9 +4,10 @@ class Tabelas {
         this.criarAtendimentos();
         this.criarOficinas();
         this.criarServicos();
-        this.extrairDadosServicos();
         this.criarOficiasXServicos();
         this.criarUsuarios();
+        this.criarVeiculos();
+        this.criarUsuarioXVeiculos();
     }
 
     criarAtendimentos() {
@@ -91,22 +92,6 @@ class Tabelas {
         });
     }
 
-    extrairDadosServicos() {
-        const sql = `INSERT INTO servicos (nome, status, data_horaMovto) VALUES
-        ('REVISÃO', 'ATIVO', '2020-06-05 15:43:41'),
-        ('MECANICA EM GERAL', 'ATIVO', '2020-06-05 15:43:57'),
-        ('ELÉTRICA', 'ATIVO', '2020-06-05 15:44:14'),
-        ('FUNILARIA/PINTURA', 'ATIVO', '2020-06-05 15:44:45');`
-
-        this.conexao.query(sql, (erro) => {
-            if(erro) {
-                console.log(erro);
-            } else {
-                console.log("extração de dados da tabela de serviços criada com sucesso")
-            }
-        });
-    }
-
     criarOficiasXServicos() {
         const sql = `CREATE TABLE IF NOT EXISTS oficinasxservicos (
             id int(11) NOT NULL AUTO_INCREMENT,
@@ -120,6 +105,49 @@ class Tabelas {
                 console.log(erro);
             } else {
                 console.log("Tabela de oficinas x serviços criada com sucesso")
+            }
+        });
+    }
+
+    criarVeiculos() {
+        const sql = `CREATE TABLE IF NOT EXISTS veiculos (
+            id int(11) NOT NULL AUTO_INCREMENT,
+            ano int(11) NOT NULL DEFAULT 0,
+            anoModelo int(11) NOT NULL DEFAULT 0,
+            chassi varchar(15) NOT NULL DEFAULT 0,
+            cor varchar(10) NOT NULL DEFAULT 0,
+            marca varchar(10) NOT NULL DEFAULT 0,
+            modelo varchar(50) NOT NULL DEFAULT 0,
+            municipio varchar(20) NOT NULL DEFAULT 0,
+            placa varchar(10) NOT NULL DEFAULT 0,
+            situacao varchar(15) NOT NULL DEFAULT 0,
+            uf varchar(10) NOT NULL DEFAULT 0,
+            data_cad DATETIME NOT NULL,  
+            PRIMARY KEY(id)
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`
+
+        this.conexao.query(sql, (erro) => {
+            if(erro) {
+                console.log(erro);
+            } else {
+                console.log("Tabela de veiculos criada com sucesso")
+            }
+        });
+    }
+
+    criarUsuarioXVeiculos() { 
+        const sql = `CREATE TABLE IF NOT EXISTS usuariosxveiculos (
+            id int(11) NOT NULL AUTO_INCREMENT,
+            id_usuario int(11) NOT NULL DEFAULT 0,
+            id_veiculo int(11) NOT NULL DEFAULT 0,
+            PRIMARY KEY(id)
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`
+
+        this.conexao.query(sql, (erro) => {
+            if(erro) {
+                console.log(erro);
+            } else {
+                console.log("Tabela de usuarios x veiculos criada com sucesso")
             }
         });
     }

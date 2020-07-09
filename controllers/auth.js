@@ -1,10 +1,11 @@
 const Auth = require('../models/auth');
 
-
 module.exports = app => {
     app.post('/login', (req, res) => {
-        const [email, senha] = [req.body.email, req.body.senha];
-        Auth.login(email, senha, res);
+
+        const auth = req.body;
+        Auth.login(auth, res);
+        console.log(req.body)
     });
 
     app.get('/logout', (req, res) => {

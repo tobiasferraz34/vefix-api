@@ -52,7 +52,7 @@ class Atendimento {
     }
     buscaPorId(id, res) {
         const sql = `SELECT * FROM Atendimentos WHERE Atendimentos.id = ${id}`;
-        console.log(id);
+
         conexao.query(sql, (erro, resultados) => {
             const atendimento = resultados[0];
             if(erro) {
