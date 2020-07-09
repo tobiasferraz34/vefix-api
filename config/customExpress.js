@@ -7,7 +7,7 @@ module.exports = () => {
     const app = express();
 
     //http://localhost:3000
-    //origin: 'http://vefixapp-com-br.umbler.net'
+    //origin: 'http://vefixapp.com.br'
     app.use(cors({ origin: 'http://vefixapp.com.br'}))
 
     app.use(bodyParser.urlencoded({extended: true}))

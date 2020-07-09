@@ -5,7 +5,7 @@ let jwt = require('jsonwebtoken');
 class Usuario {
 
     login(email, senha, res) {
-        const sql = `select * from Usuarios where Usuarios.email = ? and Usuarios.senha = ?`
+        const sql = `select * from usuarios where usuarios.email = ? and usuarios.senha = ?`
         conexao.query(sql, [email, senha], (erro, resultados) => {
             if (erro) {
                 res.status(400).json(erro);
@@ -43,7 +43,7 @@ class Usuario {
         const usuarioDatado = { ...usuario, data_cad };
 
         //Verifica se existe um usuário cadastrado com o email informado.
-        let sql = `SELECT * FROM Usuarios WHERE Usuarios.email = ?`;
+        let sql = `SELECT * FROM usuarios WHERE usuarios.email = ?`;
 
         conexao.query(sql, [usuario.email], (erro, resultados) => {
             if (erro) {
@@ -53,7 +53,7 @@ class Usuario {
                     res.status(400).json({ status: 400, msg: "Já existem um usuário cadastrado, com o email informado." });
                 } else {
                     //Cadastro do usuário
-                    sql = 'INSERT INTO Usuarios SET ?';
+                    sql = 'INSERT INTO usuarios SET ?';
                     conexao.query(sql, usuarioDatado, (erro, resultados) => {
                         if (erro) {
                             res.status(400).json(erro);
@@ -69,7 +69,7 @@ class Usuario {
     }
 
     lista(res) {
-        const sql = 'SELECT * FROM Usuarios';
+        const sql = 'SELECT * FROM usuarios';
         conexao.query(sql, (erro, resultados) => {
             if (erro) {
                 res.status(400).json(erro);
@@ -80,7 +80,7 @@ class Usuario {
     }
 
     buscaPorId(id, res) {
-        const sql = `SELECT * FROM Usuarios where Usuarios.id = ?`;
+        const sql = `SELECT * FROM usuarios where usuarios.id = ?`;
         conexao.query(sql, [id], (erro, resultados) => {
             if (erro) {
                 res.status(400).json(erro);
