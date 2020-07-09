@@ -13,7 +13,7 @@ class Veiculo {
             const data_cad = moment().format('YYYY-MM-DD hh:mm:ss');
             const veiculoDatado = { ano, anoModelo, chassi, cor, marca, modelo, municipio, placa, situacao, uf, data_cad }
 
-            let sql = `SELECT * FROM VEICULOS WHERE veiculos.placa = ?`;
+            let sql = `SELECT * FROM veiculos WHERE veiculos.placa = ?`;
             conexao.query(sql, [veiculo.placa], (erro, resultados) => {
                 if (erro) {
                     res.status(400).json({ status: 400, msg: erro });
