@@ -11,9 +11,19 @@ class Tabelas {
     }
 
     criarAtendimentos() {
-        const sql = 'CREATE TABLE IF NOT EXISTS atendimentos (id int NOT NULL AUTO_INCREMENT,' + 
-        'cliente varchar(50) NOT NULL, pet varchar(20), servico varchar(20) NOT NULL, data datetime NOT NULL,' + 
-        'dataCriacao datetime NOT NULL, status varchar(20) NOT NULL, observacoes text, PRIMARY KEY(id))'
+        const sql = `CREATE TABLE IF NOT EXISTS atendimentos (
+        id int NOT NULL AUTO_INCREMENT,
+        id_cliente INT NOT NULL DEFAULT '0',
+        id_veiculo INT NOT NULL DEFAULT '0',
+        id_oficina INT NOT NULL DEFAULT '0',
+        servico varchar(50) NOT NULL, 
+        data_agendamento DATE NOT NULL,
+        hora_agendamento TIME NOT NULL,
+        observacao text, 
+        dataCriacao datetime NOT NULL,     
+        status varchar(20) NOT NULL DEFAULT 'AGENDADO', 
+        PRIMARY KEY(id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`
 
         this.conexao.query(sql, (erro) => {
             if(erro) {
@@ -30,9 +40,8 @@ class Tabelas {
             nome varchar(100) NOT NULL DEFAULT '0',
             email varchar(255) NOT NULL DEFAULT '0',
             senha varchar(255) NOT NULL DEFAULT '0',
-            uf varchar(10) NOT NULL DEFAULT '0',
-            cidade varchar(50) NOT NULL DEFAULT '0',
             data_cad datetime NOT NULL,
+            nivel_acesso INT NOT NULL DEFAULT '1',
             PRIMARY KEY(id)
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`
 

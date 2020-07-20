@@ -1,14 +1,13 @@
 const moment = require('moment');
 const conexao = require('../infraestrutura/conexao');
-require("dotenv-safe").config();
 let jwt = require('jsonwebtoken');
 
 class Auth {
+
     login(auth, res) {
         const { email, senha, nivelAcesso } = auth;
-
-        //Cliente
-        if (parseInt(nivelAcesso) === 1) {
+        //Cliente 
+        if (parseInt(nivelAcesso) === 1 || parseInt(nivelAcesso) === 3) {
             const sql = `select * from usuarios where usuarios.email = ? and usuarios.senha = ?`
             conexao.query(sql, [email, senha], (erro, resultados) => {
                 if (erro) {
@@ -17,23 +16,17 @@ class Auth {
                     if (resultados.length > 0) {
 
                         let id = '';
-                        let nome = '';
-                        let email = '';
-                        let uf = '';
-                        let cidade = '';
+                        let nivelAcesso = '';
 
                         resultados.map(usuario => {
                             id = usuario.id
-                            nome = usuario.nome
-                            email = usuario.email
-                            uf = usuario.uf
-                            cidade = usuario.cidade
+                            nivelAcesso = usuario.nivel_acesso
                         });
 
-                        const token = jwt.sign({ id }, process.env.SECRET, {
-                            expiresIn: 300 // expires in 5min
+                        const token = jwt.sign({ id, nivelAcesso }, process.env.SECRET, {
+                            expiresIn: '1h' // expires in 5min
                         });
-                        res.status(201).send({ auth: true, token: token, status: 200, id: id, nome: nome, email: email, uf: uf, cidade: cidade });
+                        res.status(201).send({ auth: true, token: token, nivelAcesso, status: 200});
                     } else {
                         res.status(400).json({ status: 400, msg: "Verifique se o seu email ou senha estão corretos!" });
                     }
@@ -59,37 +52,47 @@ class Auth {
                     })
 
                     const token = jwt.sign({ id }, process.env.SECRET, {
-                        expiresIn: 300 // expires in 5min
+                        expiresIn: '1h' // expires in 5min
                     });
 
-                    res.status(200).json({ auth: true, token, id: id, status: 200 });
+                    res.status(200).json({ auth: true, token, nivelAcesso: 2, status: 200 });
                 } else {
                     res.status(400).json({ msg: "Verifique se o seu email ou senha estão corretos!", status: 400 });
                 }
             })
         }
 
-        //Administrador
-        if (parseInt(nivelAcesso) === 3) {
-            res.status(400).json({ status: 400, msg: "Em Obras!" });
-        }
-
-
+    
     }
 
     verificaJWT(req, res, next) {
-        let token = req.body.token || req.query.token || req.headers['x-access-token'];
-
-        if (!token) return res.status(401).send({ auth: false, message: 'Acesso Restrito.' });
-
-        jwt.verify(token, process.env.SECRET, function (err, decoded) {
-            if (err) return res.status(500).send({ auth: false, message: 'Token Inválido.' });
-
-            // se tudo estiver ok, salva no request para uso posterior
-            req.userId = decoded.id;
-            next();
-        });
+        let token = req.body.token || req.query.token || req.headers['x-access-token'] || req.params.token;
+        
+        if(!token) {
+            res.status(401).send({ auth: false, message: 'Acesso Restrito.' });
+        } else {
+            jwt.verify(token, process.env.SECRET, function (err, decoded) {
+                if (err) return res.status(500).send({ auth: false, message: 'Token Inválido.' });
+    
+                // se tudo estiver ok, salva no request para uso posterior
+                req.userId = decoded.id;
+                req.nivelAcesso = decoded.nivelAcesso
+                
+                next();
+            });
+        }
     }
+
+    verificaNivelAcesso(userNivelAcesso, nivelAcesso) {
+        if(userNivelAcesso !== nivelAcesso) {
+            return true;
+        }
+        return false;
+    }
+
+    
 }
+
+
 
 module.exports = new Auth;

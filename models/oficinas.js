@@ -55,6 +55,71 @@ class Oficina {
             }
         });
     }
+
+    //Lista de oficinas em geral
+    lista(res) {
+        const sql = `SELECT oficinas.id, oficinas.nome, oficinas.email, oficinas.cpf_cnpj, 
+        oficinas.cep, oficinas.estado, oficinas.cidade, oficinas.bairro,oficinas.logradouro, 
+        oficinas.telefone, GROUP_CONCAT(servicos.id ORDER BY servicos.id) AS id_servicos, 
+        GROUP_CONCAT(servicos.nome) AS servicos, 
+         date_format(oficinas.data_cad, '%d/%m/%y Às %Hh%i') AS data_cad
+        FROM oficinas 
+        INNER JOIN oficinasxservicos ON oficinas.id = oficinasxservicos.id_oficina
+        INNER JOIN servicos ON oficinasxservicos.id_servico = servicos.id
+        WHERE oficinas.estado = 'PB'
+        GROUP BY oficinas.id 
+        ORDER BY oficinas.id DESC`;
+        conexao.query(sql, (erro, resultados) => {
+            if(erro) {
+                res.status(400).json({status: 400, msg: erro});
+            } else {
+                res.status(200).json({status: 200, resultados});
+            }
+        })
+    }
+
+    //lista de oficinas por estado
+    listaOficinasPorEstado(uf, res) {
+        const sql = `SELECT oficinas.id, oficinas.nome, oficinas.bairro,oficinas.logradouro, 
+        oficinas.telefone, GROUP_CONCAT(servicos.id ORDER BY servicos.id) AS id_servicos, 
+        GROUP_CONCAT(servicos.nome) AS servicos
+        FROM oficinas 
+        INNER JOIN oficinasxservicos ON oficinas.id = oficinasxservicos.id_oficina
+        INNER JOIN servicos ON oficinasxservicos.id_servico = servicos.id
+        WHERE oficinas.estado = ?
+        GROUP BY oficinas.nome `;
+
+        conexao.query(sql, [uf], (erro, resultados) => {
+            if(erro) {
+                res.status(400).json({status: 400, msg: erro});
+            } else {
+                res.status(200).json({status: 200, resultados});
+            }
+        })
+    }
+
+    listaAtendimentos(id_oficina, res) {
+        const sql = `SELECT usuarios.id, usuarios.nome AS usuario, veiculos.id AS id_veiculo, veiculos.marca, veiculos.modelo,
+        veiculos.placa, oficinas.id AS id_oficina, oficinas.nome AS oficina,  atendimentos.id AS id_atendimento,atendimentos.servico, 
+        date_format(atendimentos.data_agendamento, '%d/%m/%y') AS data_agendamento,
+        atendimentos.hora_agendamento, atendimentos.observacao, atendimentos.status,
+        date_format(atendimentos.dataCriacao, '%d/%m/%y Às %Hh%i') AS dataCriacao
+        FROM atendimentos 
+        INNER JOIN veiculos ON atendimentos.id_veiculo = veiculos.id
+        INNER JOIN oficinas ON atendimentos.id_oficina = oficinas.id
+        INNER JOIN usuarios ON atendimentos.id_cliente = usuarios.id
+        WHERE atendimentos.id_oficina = ?
+        ORDER BY veiculos.id desc`;
+
+        conexao.query(sql, [id_oficina], (erro, resultados) => {
+            if(erro) {
+                res.status(400).json({status: 400, msg: erro});
+            } else {
+                res.status(200).json({status: 200, resultados});
+            }
+        })
+
+    }
 }
 
 module.exports = new Oficina;

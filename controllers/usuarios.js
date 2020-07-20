@@ -1,5 +1,6 @@
 const Usuario = require('../models/usuarios');
-const Auth = require('../models/auth');
+const auth = require('../models/auth');
+const niveisAcesso = require('../services/niveisAcesso');
 
 module.exports = app => {
 
@@ -8,14 +9,27 @@ module.exports = app => {
         Usuario.adiciona(usuario, res);
     });
 
-    app.get('/usuarios', Auth.verificaJWT, (req, res) => {
-        console.log(req.userId)
-        Usuario.lista(res);
+    app.get('/usuarios', auth.verificaJWT, (req, res) => {
+        
+        if(auth.verificaNivelAcesso(req.nivelAcesso, niveisAcesso.admin)) {
+            res.status(401).send({ auth: false, message: 'Você não possui permissão' });
+        } else {
+            Usuario.lista(res);
+        }
+        
     });
 
-    app.get('/usuarios/:id', Auth.verificaJWT,(req, res) => {
+    app.get('/usuarios/:id', auth.verificaJWT, (req, res) => {
         const id = req.params.id;
         Usuario.buscaPorId(id, res);
-    })
+    });
+
+    app.get('/usuarios/:id/atendimentos', auth.verificaJWT, (req, res) => {
+        Usuario.listaAtendimentos(req.userId, res);
+    });
+
+    app.get('/usuarios/:id/veiculos', auth.verificaJWT, (req, res) => {
+        Usuario.listaVeiculos(req.userId, res);
+    });
 
 }

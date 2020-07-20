@@ -2,7 +2,7 @@ const conexao = require('../infraestrutura/conexao');
 const moment = require('moment');
 
 class Veiculo {
-
+    
     adiciona(veiculo, res) {
         const { ano, anoModelo, chassi, cor, marca, modelo, municipio, placa, situacao, uf } = veiculo;
 
@@ -29,7 +29,7 @@ class Veiculo {
                             } else {
                                 //Recuperando o id do veiculo cadastrado
                                 sql = `INSERT INTO usuariosxveiculos (id_usuario, id_veiculo) VALUES (?, ?);`;
-                                conexao.query(sql, [veiculo.id_usuario, resultados.insertId],(erro, resultados) => {
+                                conexao.query(sql, [veiculo.userId, resultados.insertId],(erro, resultados) => {
                                     if (erro) {
                                         res.status(400).json(erro);
                                     } else {
@@ -45,24 +45,29 @@ class Veiculo {
         }
     }
 
-    buscaPorId(id, res) {
-        const sql = `SELECT veiculos.id, veiculos.ano, veiculos.anoModelo, 
-        veiculos.chassi, veiculos.cor, veiculos.marca, veiculos.modelo,
-        veiculos.municipio, veiculos.placa, veiculos.situacao,
-        veiculos.uf, veiculos.data_cad
-        FROM usuarios 
-        INNER JOIN usuariosxveiculos ON usuarios.id = usuariosxveiculos.id_usuario
-        INNER JOIN veiculos ON usuariosxveiculos.id_veiculo = veiculos.id
-        WHERE usuarios.id = ?`
+    lista(res) {
+        const sql = `SELECT usuarios.nome as dono, usuarios.id, veiculos.id AS id_veiculo,
+        veiculos.placa, veiculos.ano, 
+        veiculos.anoModelo, veiculos.chassi, veiculos.cor, 
+        veiculos.marca, veiculos.modelo,
+        veiculos.municipio, veiculos.situacao,
+        veiculos.uf, date_format(veiculos.data_cad, '%d/%m/%y as %Hh%i') AS data_cad
+        FROM veiculos
+        INNER JOIN usuariosxveiculos ON veiculos.id = usuariosxveiculos.id_veiculo
+        INNER JOIN usuarios ON usuariosxveiculos.id_usuario = usuarios.id
+        ORDER BY veiculos.id desc`;
 
-        conexao.query(sql, [id], (erro, resultados) => {
+        conexao.query(sql, (erro, resultados) => {
             if(erro) {
-                res.status(400).json({ status: 400, msg: erro });
+                res.status(400).json(erro);
             } else {
-                res.status(200).json({ status: 200, resultados });
-                console.log(resultados)
+                res.status(200).json({ status: 200, resultados});
             }
-        });
+        })
+    }
+
+    buscaPorId(id, res) {
+        
     }
 
 

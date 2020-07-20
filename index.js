@@ -3,7 +3,7 @@ require("dotenv-safe").config({
 });
 
 console.log(process.env.DB_PASS);
-
+require("dotenv-safe").config();
 //A responsabilidade desse arquivo é subir o servidor
 const customExpress = require('./config/customExpress');
 const conexao = require('./infraestrutura/conexao');
