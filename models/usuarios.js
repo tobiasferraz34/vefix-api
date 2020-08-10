@@ -17,7 +17,7 @@ class Usuario {
                 res.status(400).json({status: 400, msg: erro});
             } else {
                 if (resultados.length > 0) {
-                    res.status(400).json({ status: 400, msg: "Já existem um usuário cadastrado, com o email informado." });
+                    res.status(400).json({ status: 400, msg: "Já existe um usuário cadastrado, com o email informado." });
                 } else {
                     //Cadastro do usuário
                     sql = 'INSERT INTO usuarios SET ?';
@@ -29,10 +29,8 @@ class Usuario {
                         }
                     });
                 }
-
             }
-        })
-
+        });
     }
 
     lista(res) {
@@ -61,7 +59,7 @@ class Usuario {
         INNER JOIN oficinas ON atendimentos.id_oficina = oficinas.id
         INNER JOIN usuarios ON atendimentos.id_cliente = usuarios.id
         WHERE atendimentos.id_cliente = ?
-        ORDER BY veiculos.id desc`;
+        ORDER BY atendimentos.id desc`;
 
         conexao.query(sql, [id_usuario], (erro, resultados) => {
             if(erro) {
@@ -80,7 +78,7 @@ class Usuario {
         FROM usuarios 
         INNER JOIN usuariosxveiculos ON usuarios.id = usuariosxveiculos.id_usuario
         INNER JOIN veiculos ON usuariosxveiculos.id_veiculo = veiculos.id
-        WHERE usuarios.id = ?`
+        WHERE usuarios.id = ? ORDER BY veiculos.id DESC`
 
         conexao.query(sql, [id_usuario], (erro, resultados) => {
             if(erro) {

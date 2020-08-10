@@ -19,7 +19,7 @@ class Veiculo {
                     res.status(400).json({ status: 400, msg: erro });
                 } else {
                     if (resultados.length > 0) {    
-                        res.status(400).json({ status: 400, msg: "Já existem um veiculo cadastrado, com a placa informada." });
+                        res.status(400).json({ status: 400, msg: "Já existe um veiculo cadastrado, com a placa informada." });
                     } else {
                         //Cadastro do veiculo
                         sql = 'INSERT INTO veiculos SET ?';

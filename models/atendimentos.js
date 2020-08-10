@@ -6,37 +6,26 @@ class Atendimento {
 
         const {id_veiculo, id_cliente, id_oficina, servico, observacao, hora_agendamento} = atendimento;
 
-        const dataCriacao = moment().format('YYYY-MM-DD hh:mm:ss');
-        const data_agendamento = moment(atendimento.data_agendamento, 'YYYY-MM-DD').format('YYYY-MM-DD hh:mm:ss');
-        
+        let dataCriacao = moment().format('YYYY-MM-DD');
+        const data_agendamento = moment(atendimento.data_agendamento, 'YYYY-MM-DD').format('YYYY-MM-DD');
 
+        console.log(dataCriacao + " " + data_agendamento);
+        
         const dataValida = moment(data_agendamento).isSameOrAfter(dataCriacao); //true ou false
-        //const clienteEhValido = atendimento.cliente.length >= 5; //true ou false
 
-        const validacoes = [
-            {
-                nome: 'data',
-                valido: dataValida,
-                msg: 'Data deve ser maior ou igual a data atual',
-                status: 400
-            }
-        ];
-
-        const erros = validacoes.filter(campo => !campo.valido);
-        const existemErros = erros.length;
-        const atendimentoDatado = {id_veiculo, id_cliente, id_oficina, servico, observacao, dataCriacao, data_agendamento, hora_agendamento }
-        
-        if (existemErros) {
-            res.status(400).json(erros);
-        } else {
+        if(dataValida) {
+            dataCriacao = moment().format('YYYY-MM-DD hh:mm:ss');
+            const atendimentoDatado = {id_veiculo, id_cliente, id_oficina, servico, observacao, dataCriacao, data_agendamento, hora_agendamento }
             const sql = 'INSERT INTO atendimentos SET ?'
             conexao.query(sql, atendimentoDatado, (erro, resultados) => {
                 if (erro) {
                     res.status(400).json({status: 400, msg: erro});
                 } else {
-                    res.status(201).json({status: 200, msg: "Cadastrado com sucesso"});
+                    res.status(200).json({status: 200, msg: "Cadastrado com sucesso"});
                 }
             });
+        } else {
+            res.status(400).json({status: 400, msg: 'A data deve ser maior ou igual a data atual'});
         }
     }
 

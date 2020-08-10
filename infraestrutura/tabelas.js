@@ -8,6 +8,8 @@ class Tabelas {
         this.criarUsuarios();
         this.criarVeiculos();
         this.criarUsuarioXVeiculos();
+        this.criarOrdemServicos();
+        this.criarItensServicos();
     }
 
     criarAtendimentos() {
@@ -157,6 +159,50 @@ class Tabelas {
                 console.log(erro);
             } else {
                 console.log("Tabela de usuarios x veiculos criada com sucesso")
+            }
+        });
+    }
+
+    criarOrdemServicos() {
+        const sql = `CREATE TABLE IF NOT EXISTS ordem_servicos (
+            id int(11) NOT NULL AUTO_INCREMENT,
+            id_atendimento int(11) NOT NULL DEFAULT 0,
+            responsavel_servico varchar(50) NOT NULL DEFAULT 0,
+            dt_inicial DATE NOT NULL,
+            dt_final DATE NOT NULL,
+            descricao_servico varchar(300) NOT NULL DEFAULT 0,
+            data_cad DATE NOT NULL,
+            hora_cad TIME NOT NULL,
+            status varchar(50) NOT NULL DEFAULT 'ABERTO',
+            PRIMARY KEY(id)
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+        
+
+        this.conexao.query(sql, (erro) => {
+            if(erro) {
+                console.log(erro);
+            } else {
+                console.log("Tabela de ordem serviços criada com sucesso")
+            }
+        });
+    }
+
+    criarItensServicos() {
+        const sql = `CREATE TABLE IF NOT EXISTS itens_servicos (
+            id int(11) NOT NULL AUTO_INCREMENT,
+            id_os int(11) NOT NULL DEFAULT 0,
+            nome_item varchar(50) NOT NULL DEFAULT 0,
+            valor_item DOUBLE NOT NULL DEFAULT 0,
+            data_horaCad DATETIME NOT NULL,
+            PRIMARY KEY(id)
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+        
+
+        this.conexao.query(sql, (erro) => {
+            if(erro) {
+                console.log(erro);
+            } else {
+                console.log("Tabela de itens de serviços criada com sucesso")
             }
         });
     }

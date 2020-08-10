@@ -18,15 +18,19 @@ module.exports = app => {
     });
 
     app.post('/atendimentos', Auth.verificaJWT, (req, res) => {
+        
         const id_cliente = req.userId;
         const atendimento = {...req.body, id_cliente};
+
         Atendimento.adiciona(atendimento, res);
     });
-    app.patch('/atendimentos/:id', (req, res) => {
+    
+    app.patch('/atendimentos/:id', (req, res) => {''
         const id = parseInt(req.params.id);
         const valores = req.body;
         Atendimento.altera(id, valores, res);
     });
+
     app.delete('/atendimentos/:id', (req, res) => {
         const id = parseInt(req.params.id);
         Atendimento.deleta(id, res);
