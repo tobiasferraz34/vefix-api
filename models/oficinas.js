@@ -65,7 +65,6 @@ class Oficina {
         FROM oficinas 
         INNER JOIN oficinasxservicos ON oficinas.id = oficinasxservicos.id_oficina
         INNER JOIN servicos ON oficinasxservicos.id_servico = servicos.id
-        WHERE oficinas.estado = 'PB'
         GROUP BY oficinas.id 
         ORDER BY oficinas.id DESC`;
         conexao.query(sql, (erro, resultados) => {
@@ -101,13 +100,15 @@ class Oficina {
     //lista de oficinas por estado
     listaOficinasPorEstadoEMunicipio(uf, municipio, res) {
         const sql = `SELECT oficinas.id, oficinas.nome, oficinas.bairro,oficinas.logradouro, 
-        oficinas.telefone, GROUP_CONCAT(servicos.id ORDER BY servicos.id) AS id_servicos, 
-        GROUP_CONCAT(servicos.nome) AS servicos
-        FROM oficinas 
+        oficinas.telefone, GROUP_CONCAT(DISTINCT servicos.id
+        ORDER BY servicos.id) AS id_servicos, GROUP_CONCAT(DISTINCT servicos.nome)
+        AS servicos, FORMAT(SUM(avaliacao.pontuacao) / 5, 1) AS pontuacao 
+        FROM oficinas
         INNER JOIN oficinasxservicos ON oficinas.id = oficinasxservicos.id_oficina
         INNER JOIN servicos ON oficinasxservicos.id_servico = servicos.id
+        LEFT JOIN avaliacao ON oficinasxservicos.id_oficina = avaliacao.id_oficina
         WHERE oficinas.estado = ? AND oficinas.cidade = ?
-        GROUP BY oficinas.nome `;
+        GROUP BY oficinas.id`;
 
         conexao.query(sql, [uf, municipio], (erro, resultados) => {
             if(erro) {
@@ -153,7 +154,7 @@ class Oficina {
         ordem_servicos.descricao_servico, ordem_servicos.status AS status_ordemServico,
         atendimentos.id AS id_atendimento, atendimentos.servico, atendimentos.status AS status_atendimento,  
         date_format(atendimentos.data_agendamento, '%d/%m/%y') AS data_agendamentoAtendimento,
-        atendimentos.hora_agendamento AS hora_agendamentoAtendimento,usuarios.id AS id_usuario, usuarios.nome AS cliente,
+        atendimentos.hora_agendamento AS hora_agendamentoAtendimento,usuarios.id AS id_usuario, usuarios.nome AS cliente, if(usuarios.celular > 0, usuarios.celular, '') AS celularCliente,
         veiculos.id AS id_veiculo, veiculos.placa, veiculos.marca, veiculos.modelo
         FROM ordem_servicos
         INNER JOIN atendimentos ON ordem_servicos.id_atendimento = atendimentos.id

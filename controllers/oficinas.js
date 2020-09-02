@@ -12,9 +12,10 @@ module.exports = app => {
     app.get('/oficinas', Auth.verificaJWT, (req, res) => {
         if(Auth.verificaNivelAcesso(req.nivelAcesso, niveisAcesso.admin)) {
             res.status(401).send({ auth: false, message: 'Você não possui permissão' });
-        } else {
-            Oficina.lista(res)
-        }
+        } 
+        
+        Oficina.lista(res)
+        
     });
 
     app.get('/oficinas/:id/atendimentos', Auth.verificaJWT, (req, res) => {

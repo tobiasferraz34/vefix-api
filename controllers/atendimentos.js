@@ -6,9 +6,16 @@ module.exports = app => {
     app.get('/atendimentos', Auth.verificaJWT, (req, res) => {
         if(Auth.verificaNivelAcesso(req.nivelAcesso, niveisAcesso.admin)) {
             res.status(401).send({ auth: false, message: 'Você não possui permissão' });
-        } else {
-            Atendimento.lista(res);
         }
+
+        const placaVeiculo = req.query.placaVeiculo ? `AND veiculos.placa = '${req.query.placaVeiculo}'`: '';
+        const marcaVeiculo = req.query.marcaVeiculo ? `AND veiculos.marca LIKE '%${req.query.marcaVeiculo}%'`: '';
+        const modeloVeiculo = req.query.modeloVeiculo ? `AND veiculos.modelo LIKE '%${req.query.modeloVeiculo}%'`: '';
+        const servico = req.query.servico ? `AND atendimentos.servico LIKE '%${req.query.servico}%'`: '';
+        const dt_agend = req.query.dt_agend ? `AND atendimentos.data_agendamento = '${req.query.dt_agend}'`: '';
+
+        Atendimento.lista(placaVeiculo, marcaVeiculo, modeloVeiculo, servico, dt_agend, res);    
+
     });
 
     app.get('/atendimentos/:id', (req, res) => {
@@ -35,6 +42,4 @@ module.exports = app => {
         const id = parseInt(req.params.id);
         Atendimento.deleta(id, res);
     });
-
-
 }

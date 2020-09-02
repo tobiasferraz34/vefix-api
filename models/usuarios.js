@@ -49,8 +49,8 @@ class Usuario {
     }
 
     listaAtendimentos(id_usuario, res) {
-        const sql = `SELECT usuarios.id, usuarios.nome AS usuario, veiculos.id AS id_veiculo, veiculos.marca, veiculos.modelo,
-        veiculos.placa, oficinas.nome AS oficina,  atendimentos.id AS id_atendimento,atendimentos.servico, 
+        const sql = `SELECT usuarios.id as id_usuario, usuarios.nome AS usuario, veiculos.id AS id_veiculo, veiculos.marca, veiculos.modelo,
+        veiculos.placa, oficinas.id as id_oficina, oficinas.nome AS oficina,  atendimentos.id AS id_atendimento,atendimentos.servico, 
         date_format(atendimentos.data_agendamento, '%d/%m/%y') AS data_agendamento,
         atendimentos.hora_agendamento, atendimentos.observacao, atendimentos.status,
         date_format(atendimentos.dataCriacao, '%d/%m/%y Às %Hh%i') AS dataCriacao
@@ -99,6 +99,25 @@ class Usuario {
             }
         });
     }
+
+    altera(id, valores, res) {
+
+        if(!valores.senha) {
+            console.log("Sem a senha");
+            delete valores.senha
+        }
+
+        const sql = 'UPDATE usuarios SET ? WHERE id=?';
+        conexao.query(sql, [valores, id],(erro, resultados) => {
+            if(erro) {
+                res.status(400).json({status: 400, msg: erro})
+            } else {
+                res.status(200).json({status: 200, msg: "Atualizado com sucesso."});
+            }
+        });
+    }
+
+
 }
 
 module.exports = new Usuario;

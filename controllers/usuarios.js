@@ -13,14 +13,13 @@ module.exports = app => {
         
         if(auth.verificaNivelAcesso(req.nivelAcesso, niveisAcesso.admin)) {
             res.status(401).send({ auth: false, message: 'Você não possui permissão' });
-        } else {
-            Usuario.lista(res);
         }
         
+        Usuario.lista(res);
     });
 
     app.get('/usuarios/:id', auth.verificaJWT, (req, res) => {
-        const id = req.params.id;
+        const id = req.userId;
         Usuario.buscaPorId(id, res);
     });
 
@@ -31,5 +30,11 @@ module.exports = app => {
     app.get('/usuarios/:id/veiculos', auth.verificaJWT, (req, res) => {
         Usuario.listaVeiculos(req.userId, res);
     });
+
+    app.put('/usuarios/:id', auth.verificaJWT, (req, res) => {
+        const id = req.params.id;
+        const valores = req.body;
+        Usuario.altera(id, valores, res);
+    })
 
 }

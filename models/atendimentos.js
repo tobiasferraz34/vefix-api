@@ -29,7 +29,7 @@ class Atendimento {
         }
     }
 
-    lista(res) {
+    lista(placaVeiculo, marcaVeiculo, modeloVeiculo, servico, dt_agend, res) {
         const sql = `SELECT usuarios.id, usuarios.nome AS usuario, veiculos.id AS id_veiculo, veiculos.marca, veiculos.modelo,
         veiculos.placa, oficinas.nome AS oficina,  atendimentos.id AS id_atendimento,atendimentos.servico, 
         date_format(atendimentos.data_agendamento, '%d/%m/%y') AS data_agendamento,
@@ -39,6 +39,7 @@ class Atendimento {
         INNER JOIN veiculos ON atendimentos.id_veiculo = veiculos.id
         INNER JOIN oficinas ON atendimentos.id_oficina = oficinas.id
         INNER JOIN usuarios ON atendimentos.id_cliente = usuarios.id
+        WHERE atendimentos.id <> 0 ${placaVeiculo} ${marcaVeiculo} ${modeloVeiculo} ${servico} ${dt_agend}   
         ORDER BY veiculos.id DESC`;
 
         conexao.query(sql, (erro, resultados) => {
@@ -66,7 +67,7 @@ class Atendimento {
             valores.data = moment(valores.data, 'DD/MM/YYYY').format('YYYY-MM-DD HH:MM:SS');
         }
 
-        const sql = 'UPDATE Atendimentos SET ? WHERE id=?';
+        const sql = 'UPDATE atendimentos SET ? WHERE id=?';
         conexao.query(sql, [valores, id], (erro, resultados) => {
             if(erro) {
                 res.status(400).json(erro)
@@ -88,4 +89,4 @@ class Atendimento {
     }
 }
 
-module.exports = new Atendimento
+module.exports = new Atendimento;

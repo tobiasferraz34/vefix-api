@@ -10,6 +10,7 @@ class Tabelas {
         this.criarUsuarioXVeiculos();
         this.criarOrdemServicos();
         this.criarItensServicos();
+        this.criarAvaliacao();
     }
 
     criarAtendimentos() {
@@ -41,6 +42,7 @@ class Tabelas {
             id int(11) NOT NULL AUTO_INCREMENT,
             nome varchar(100) NOT NULL DEFAULT '0',
             email varchar(255) NOT NULL DEFAULT '0',
+            celular varchar(20) NOT NULL DEFAULT '0',
             senha varchar(255) NOT NULL DEFAULT '0',
             data_cad datetime NOT NULL,
             nivel_acesso INT NOT NULL DEFAULT '1',
@@ -203,6 +205,25 @@ class Tabelas {
                 console.log(erro);
             } else {
                 console.log("Tabela de itens de serviços criada com sucesso")
+            }
+        });
+    }
+
+    criarAvaliacao() {
+        const sql = `CREATE TABLE IF NOT EXISTS avaliacao (
+            id INT NOT NULL AUTO_INCREMENT,
+            pontuacao INT NOT NULL DEFAULT '0',
+            id_oficina INT NOT NULL DEFAULT '0',
+            id_usuario INT NOT NULL DEFAULT '0',
+            data_horaCad DATETIME NOT NULL,
+            PRIMARY KEY (id)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+        
+        this.conexao.query(sql, (erro) => {
+            if(erro) {
+                console.log(erro);
+            } else {
+                console.log("Tabela de avaliação criada com sucesso")
             }
         });
     }

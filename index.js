@@ -2,7 +2,6 @@ require("dotenv-safe").config({
     allowEmptyValues: true
 });
 
-console.log(process.env.DB_PASS);
 require("dotenv-safe").config();
 //A responsabilidade desse arquivo é subir o servidor
 const customExpress = require('./config/customExpress');
@@ -12,6 +11,6 @@ const Tabelas = require('./infraestrutura/tabelas');
 Tabelas.init(conexao);
 const app = customExpress();
 var port = process.env.PORT || 3000;
-app.listen(port, () => console.log("Servidor rodando na porta 3000"));
+app.listen(port, () => console.log("Servidor rodando na porta 4000"));
 
 

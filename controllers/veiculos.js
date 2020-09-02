@@ -13,9 +13,9 @@ module.exports = app => {
         
         if(auth.verificaNivelAcesso(req.nivelAcesso, niveisAcesso.admin)) {
             res.status(401).send({ auth: false, message: 'Você não possui permissão' });
-        } else {
-            veiculos.lista(res);
-        }
+        }  
+        
+        veiculos.lista(res);
     });
 
     app.get('/veiculos/:id', auth.verificaJWT, (req, res) => {

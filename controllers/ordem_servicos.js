@@ -10,7 +10,6 @@ module.exports = app => {
     app.put('/ordem_servicos/:id', (req, res) => {
         const id_os = req.params.id;
         const valores = req.body;
-        console.log(valores);
         OrdemServicos.altera(id_os, valores, res)
     })
 

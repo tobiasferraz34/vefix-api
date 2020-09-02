@@ -14,21 +14,25 @@ class Auth {
                     res.status(400).json(erro);
                 } else {
                     if (resultados.length > 0) {
-
                         let id = '';
+                        let nome = '';
+                        let email = ''
                         let nivelAcesso = '';
 
                         resultados.map(usuario => {
                             id = usuario.id
+                            nome = usuario.nome
+                            email = usuario.email
                             nivelAcesso = usuario.nivel_acesso
                         });
 
                         const token = jwt.sign({ id, nivelAcesso }, process.env.SECRET, {
                             expiresIn: '1h' // expires in 5min
                         });
-                        res.status(201).send({ auth: true, token: token, nivelAcesso, status: 200});
+
+                        res.status(201).send({ auth: true, token: token, id, nome, email, nivelAcesso, status: 200});
                     } else {
-                        res.status(400).json({ status: 400, msg: "Verifique se o seu email ou senha estão corretos!" });
+                        res.status(400).json({ status: 400, msg: "Verifique se o seu email, senha ou nivel de acesso estão corretos!" });
                     }
 
                 }
