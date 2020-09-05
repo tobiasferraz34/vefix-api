@@ -30,13 +30,14 @@ module.exports = app => {
         Oficina.listaOrdemServicos(req.userId, res);
     });
 
-    app.get('/oficinas/:id/perfil', Auth.verificaJWT, (req, res) => {
-        Oficina.buscaPorId(req.userId, res);
-    });
-
     app.get('/oficinas/:uf/:municipio', Auth.verificaJWT,(req, res) => {
         const uf = req.params.uf;
         const municipio = req.params.municipio;
         Oficina.listaOficinasPorEstadoEMunicipio(uf, municipio, res);
+    });
+
+    app.get('/oficinas/:id', Auth.verificaJWT, (req, res) => {
+        console.log(req.userId)
+        Oficina.buscaPorId(req.userId, res);
     });
 }

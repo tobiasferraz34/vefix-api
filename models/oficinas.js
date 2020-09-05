@@ -86,7 +86,6 @@ class Oficina {
         INNER JOIN oficinasxservicos ON oficinas.id = oficinasxservicos.id_oficina
         INNER JOIN servicos ON oficinasxservicos.id_servico = servicos.id
         WHERE oficinas.id = ?
-        GROUP BY oficinas.id
         `;
         conexao.query(sql, [id], (erro, resultados) => {
             if(erro) {
