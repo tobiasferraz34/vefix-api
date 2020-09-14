@@ -45,7 +45,6 @@ class OrdemServicos {
 
                         if (resultados.insertId > 0) {
                             conexao.query(sql, [id_atendimento], (erro, resultados) => {
-                                console.log(resultados)
                                 if (erro) res.status(400).json(erro);
                             })
                         }

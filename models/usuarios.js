@@ -52,14 +52,14 @@ class Usuario {
         const sql = `SELECT usuarios.id as id_usuario, usuarios.nome AS usuario, veiculos.id AS id_veiculo, veiculos.marca, veiculos.modelo,
         veiculos.placa, oficinas.id as id_oficina, oficinas.nome AS oficina,  atendimentos.id AS id_atendimento,atendimentos.servico, 
         date_format(atendimentos.data_agendamento, '%d/%m/%y') AS data_agendamento,
-        atendimentos.hora_agendamento, atendimentos.observacao, atendimentos.status,
+        atendimentos.hora_agendamento, atendimentos.observacao, atendimentos.status, atendimentos.avaliado,
         date_format(atendimentos.dataCriacao, '%d/%m/%y Às %Hh%i') AS dataCriacao
         FROM atendimentos 
         INNER JOIN veiculos ON atendimentos.id_veiculo = veiculos.id
         INNER JOIN oficinas ON atendimentos.id_oficina = oficinas.id
         INNER JOIN usuarios ON atendimentos.id_cliente = usuarios.id
         WHERE atendimentos.id_cliente = ?
-        ORDER BY atendimentos.id desc`;
+        ORDER BY atendimentos.id DESC`;
 
         conexao.query(sql, [id_usuario], (erro, resultados) => {
             if(erro) {

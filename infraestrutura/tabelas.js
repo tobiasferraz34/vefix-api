@@ -24,7 +24,8 @@ class Tabelas {
         hora_agendamento TIME NOT NULL,
         observacao text, 
         dataCriacao datetime NOT NULL,     
-        status varchar(20) NOT NULL DEFAULT 'AGENDADO', 
+        status varchar(20) NOT NULL DEFAULT 'AGENDADO',
+        avaliado VARCHAR(5) NULL DEFAULT 'NAO',
         PRIMARY KEY(id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`
 

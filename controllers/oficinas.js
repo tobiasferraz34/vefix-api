@@ -37,7 +37,6 @@ module.exports = app => {
     });
 
     app.get('/oficinas/:id', Auth.verificaJWT, (req, res) => {
-        console.log(req.userId)
         Oficina.buscaPorId(req.userId, res);
     });
 }
