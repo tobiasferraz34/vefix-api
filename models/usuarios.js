@@ -35,7 +35,7 @@ class Usuario {
 
     lista(res) {
         const sql = `SELECT usuarios.id, usuarios.nome, usuarios.email,
-        usuarios.senha, usuarios.nivel_acesso, 
+        usuarios.senha, usuarios.nivel_acesso, usuarios.celular,
         date_format(usuarios.data_cad, '%d/%m/%y Às %Hh%i') AS data_cad
         FROM usuarios ORDER BY usuarios.id DESC`;
 

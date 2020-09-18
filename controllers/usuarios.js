@@ -10,11 +10,9 @@ module.exports = app => {
     });
 
     app.get('/usuarios', auth.verificaJWT, (req, res) => {
-        
         if(auth.verificaNivelAcesso(req.nivelAcesso, niveisAcesso.admin)) {
             res.status(401).send({ auth: false, message: 'Você não possui permissão' });
         }
-        
         Usuario.lista(res);
     });
 
