@@ -119,7 +119,7 @@ class Oficina {
     }
 
     //Lista de atendimentos por oficina
-    listaAtendimentos(id_oficina, dataAtual, placaVeiculo, modeloVeiculo, res) {
+    listaAtendimentos(id_oficina, dataAtual, id_atendimento, servico, cliente, placaVeiculo, modeloVeiculo, statusAtendimento, res) {
 
         const sql = `SELECT atendimentos.id AS id_atendimento, usuarios.id AS id_usuario, usuarios.nome AS usuario, veiculos.id AS id_veiculo, veiculos.marca, veiculos.modelo,
         veiculos.placa, oficinas.id AS id_oficina, oficinas.nome AS oficina, atendimentos.servico, 
@@ -130,7 +130,7 @@ class Oficina {
         INNER JOIN veiculos ON atendimentos.id_veiculo = veiculos.id
         INNER JOIN oficinas ON atendimentos.id_oficina = oficinas.id
         INNER JOIN usuarios ON atendimentos.id_cliente = usuarios.id
-        WHERE atendimentos.id_oficina = ? ${dataAtual} ${placaVeiculo} ${modeloVeiculo}
+        WHERE atendimentos.id_oficina = ? ${dataAtual} ${id_atendimento} ${servico} ${cliente} ${placaVeiculo} ${modeloVeiculo} ${statusAtendimento}
         ORDER BY atendimentos.id desc`;
 
         conexao.query(sql, [id_oficina], (erro, resultados) => {

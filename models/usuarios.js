@@ -48,9 +48,9 @@ class Usuario {
         })
     }
 
-    listaAtendimentos(id_usuario, res) {
+    listaAtendimentos(id_usuario, placaVeiculo, nomeOficina, servico, dt_agend, res) {
         const sql = `SELECT usuarios.id as id_usuario, usuarios.nome AS usuario, veiculos.id AS id_veiculo, veiculos.marca, veiculos.modelo,
-        veiculos.placa, oficinas.id as id_oficina, oficinas.nome AS oficina,  atendimentos.id AS id_atendimento,atendimentos.servico, 
+        veiculos.placa, oficinas.id as id_oficina, oficinas.nome AS oficina,  atendimentos.id AS id_atendimento, atendimentos.servico, 
         date_format(atendimentos.data_agendamento, '%d/%m/%y') AS data_agendamento,
         atendimentos.hora_agendamento, atendimentos.observacao, atendimentos.status, atendimentos.avaliado,
         date_format(atendimentos.dataCriacao, '%d/%m/%y Às %Hh%i') AS dataCriacao
@@ -58,7 +58,7 @@ class Usuario {
         INNER JOIN veiculos ON atendimentos.id_veiculo = veiculos.id
         INNER JOIN oficinas ON atendimentos.id_oficina = oficinas.id
         INNER JOIN usuarios ON atendimentos.id_cliente = usuarios.id
-        WHERE atendimentos.id_cliente = ?
+        WHERE atendimentos.id_cliente = ? ${placaVeiculo} ${nomeOficina} ${servico} ${dt_agend}
         ORDER BY atendimentos.id DESC`;
 
         conexao.query(sql, [id_usuario], (erro, resultados) => {
@@ -103,7 +103,6 @@ class Usuario {
     altera(id, valores, res) {
 
         if(!valores.senha) {
-            console.log("Sem a senha");
             delete valores.senha
         }
 

@@ -22,7 +22,11 @@ module.exports = app => {
     });
 
     app.get('/usuarios/:id/atendimentos', auth.verificaJWT, (req, res) => {
-        Usuario.listaAtendimentos(req.userId, res);
+        const placaVeiculo = req.query.placaVeiculo ? `AND veiculos.placa = '${req.query.placaVeiculo}'` : ''; 
+        const nomeOficina = req.query.nomeOficina ? `AND oficinas.nome = '${req.query.nomeOficina}'` : '';
+        const servico = req.query.servico ? `AND atendimentos.servico = '${req.query.servico}'` : ''; 
+        const dt_agend = req.query.dt_agend ? `AND atendimentos.data_agendamento = '${req.query.dt_agend}'` : '';
+        Usuario.listaAtendimentos(req.userId, placaVeiculo, nomeOficina, servico, dt_agend, res);
     });
 
     app.get('/usuarios/:id/veiculos', auth.verificaJWT, (req, res) => {
