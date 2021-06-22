@@ -11,6 +11,10 @@ class Tabelas {
         this.criarOrdemServicos();
         this.criarItensServicos();
         this.criarAvaliacao();
+        this.criarProdutos();
+        this.criarPedidos();
+        this.criarItemsPedidos();
+
     }
 
     criarAtendimentos() {
