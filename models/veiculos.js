@@ -4,14 +4,13 @@ const moment = require('moment');
 class Veiculo {
     
     adiciona(veiculo, res) {
-        const { ano, anoModelo, chassi, cor, marca, modelo, municipio, placa, situacao, uf } = veiculo;
+        const { ano, cor, marca, modelo, placa, motorizacao} = veiculo;
 
-        if (!ano || !anoModelo || !chassi || !cor || !marca || !modelo
-            || !municipio, !! !placa || !situacao || !uf) {
+        if (!ano || !cor || !marca || !modelo ||  !placa || !motorizacao) {
             res.status(400).json({ status: 400, msg: "Por favor, preencher todos os campos" });
         } else {
             const data_cad = moment().format('YYYY-MM-DD hh:mm:ss');
-            const veiculoDatado = { ano, anoModelo, chassi, cor, marca, modelo, municipio, placa, situacao, uf, data_cad }
+            const veiculoDatado = { ano, cor, marca, modelo, placa, motorizacao, data_cad }
 
             let sql = `SELECT * FROM veiculos WHERE veiculos.placa = ?`;
             conexao.query(sql, [veiculo.placa], (erro, resultados) => {

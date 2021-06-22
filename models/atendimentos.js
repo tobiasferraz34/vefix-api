@@ -2,6 +2,7 @@ const moment = require('moment');
 const conexao = require('../infraestrutura/conexao');
 
 class Atendimento {
+
     adiciona(atendimento, res) {
 
         const {id_veiculo, id_cliente, id_oficina, servico, observacao, hora_agendamento} = atendimento;

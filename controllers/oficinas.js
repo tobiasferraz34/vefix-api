@@ -2,10 +2,31 @@ const Oficina = require('../models/oficinas')
 const Auth = require('../models/auth');
 const niveisAcesso = require('../services/niveisAcesso');
 
+const multer = require('multer');
+const { oficina } = require('../services/niveisAcesso');
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/oficinas/logos');
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname);
+    }
+});
+
+const upload = multer({storage});
+
+
 module.exports = app => {
 
-    app.post('/oficinas', (req, res) => {
+    app.get('/oficinas/:id/perfil', Auth.verificaJWT, (req, res) => {
+        Oficina.buscaPorId(req.userId, res);
+    });
+
+    app.post('/oficinas', upload.single('image') ,(req, res) => {
         const oficina = req.body;
+        //console.log(req.body, req.file);
+        //const image = req.file.originalname;
         Oficina.adiciona(oficina, res);
     });
 
@@ -16,6 +37,11 @@ module.exports = app => {
         
         Oficina.lista(res)
         
+    });
+
+    app.get('/oficinas/:id/produtos', Auth.verificaJWT, (req, res) => {
+        const id_oficina = req.userId;
+        Oficina.listaProdutosPorIdOficina(id_oficina, res);
     });
 
     app.get('/oficinas/:id/atendimentos', Auth.verificaJWT, (req, res) => {     
@@ -34,13 +60,23 @@ module.exports = app => {
         Oficina.listaOrdemServicos(req.userId, res);
     });
 
+    app.get('/oficinas/:id/pedidos', Auth.verificaJWT, (req, res) => {
+        Oficina.listaPedidos(req.userId, res);
+    });
+
     app.get('/oficinas/:uf/:municipio', Auth.verificaJWT,(req, res) => {
         const uf = req.params.uf;
         const municipio = req.params.municipio;
         Oficina.listaOficinasPorEstadoEMunicipio(uf, municipio, res);
     });
 
-    app.get('/oficinas/:id', Auth.verificaJWT, (req, res) => {
-        Oficina.buscaPorId(req.userId, res);
+    app.post('/oficinas/:id/produtos', Auth.verificaJWT, (req, res) => {
+        const id_oficina = req.userId;
+        const produto = req.body;
+        //console.log(produto);
+        Oficina.adicionarProdutos(id_oficina, produto, res);
     });
+
+    
+    
 }

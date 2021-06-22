@@ -76,6 +76,7 @@ class Tabelas {
             Longitude varchar(20) NOT NULL DEFAULT '0',
             telefone varchar(20) NOT NULL DEFAULT '0',
             data_cad datetime DEFAULT NULL,
+            logo varchar(255) DEFAULT NULL,
             PRIMARY KEY(id)
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`
 
@@ -127,15 +128,16 @@ class Tabelas {
         const sql = `CREATE TABLE IF NOT EXISTS veiculos (
             id int(11) NOT NULL AUTO_INCREMENT,
             ano int(11) NOT NULL DEFAULT 0,
-            anoModelo int(11) NOT NULL DEFAULT 0,
-            chassi varchar(15) NOT NULL DEFAULT 0,
+            anoModelo int(11) NULL DEFAULT 0,
+            chassi varchar(15) NULL DEFAULT 0,
             cor varchar(10) NOT NULL DEFAULT 0,
-            marca varchar(10) NOT NULL DEFAULT 0,
+            marca varchar(50) NOT NULL DEFAULT 0,
             modelo varchar(50) NOT NULL DEFAULT 0,
-            municipio varchar(20) NOT NULL DEFAULT 0,
+            municipio varchar(20) NULL DEFAULT 0,
             placa varchar(10) NOT NULL DEFAULT 0,
-            situacao varchar(15) NOT NULL DEFAULT 0,
-            uf varchar(10) NOT NULL DEFAULT 0,
+            situacao varchar(15) NULL DEFAULT 0,
+            uf varchar(10) NULL DEFAULT 0,
+            motorizacao varchar(50) NOT NULL DEFAULT 0,
             data_cad DATETIME NOT NULL,  
             PRIMARY KEY(id)
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`
@@ -228,6 +230,75 @@ class Tabelas {
             }
         });
     }
+
+    criarProdutos() {
+        const sql = `CREATE TABLE IF NOT EXISTS produtos (
+            id INT NOT NULL AUTO_INCREMENT,
+            nome varchar(50) NULL DEFAULT '0',
+            preco double NOT NULL DEFAULT '0',
+            quantidade int NOT NULL DEFAULT '0',
+            descricao text NOT NULL DEFAULT '0',
+            image text NOT NULL DEFAULT '0',
+            data_cad DATETIME NOT NULL,
+            id_oficina	int NULL,
+            PRIMARY KEY (id)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+        
+        this.conexao.query(sql, (erro) => {
+            if(erro) {
+                console.log(erro);
+            } else {
+                console.log("Tabela de produtos criada com sucesso")
+            }
+        });
+    }
+
+    criarPedidos() {
+        const sql = `CREATE TABLE IF NOT EXISTS pedidos (
+            id INT NOT NULL AUTO_INCREMENT,
+            id_usuario INT NOT NULL DEFAULT '0',
+            id_oficina INT NOT NULL DEFAULT '0',
+            data DATE NOT NULL,
+            status varchar(15) NOT NULL DEFAULT 'ATIVO',
+            total double NOT NULL DEFAULT 0,
+            forma_pagamento	varchar(100) NOT NULL DEFAULT '0',
+            forma_envio	varchar(100) NOT NULL DEFAULT '0',
+            data_cad DATETIME NOT NULL,
+            PRIMARY KEY (id)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+        
+        this.conexao.query(sql, (erro) => {
+            if(erro) {
+                console.log(erro);
+            } else {
+                console.log("Tabela de pedidos criada com sucesso")
+            }
+        });
+    }
+
+    criarItemsPedidos() {
+        const sql = `CREATE TABLE IF NOT EXISTS items_pedidos (
+            id INT NOT NULL AUTO_INCREMENT,
+            id_pedido INT NOT NULL DEFAULT '0',
+            id_produto INT NOT NULL DEFAULT '0',
+            nome varchar(255) NOT NULL DEFAULT '0',
+            preco_unitario	double NOT NULL DEFAULT 0,
+            quantidade INT NOT NULL DEFAULT '0',
+            subTotal double NOT NULL DEFAULT 0,
+            data_cad DATETIME NOT NULL,
+            PRIMARY KEY (id)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`;
+        
+        this.conexao.query(sql, (erro) => {
+            if(erro) {
+                console.log(erro);
+            } else {
+                console.log("Tabela de items_pedidos criada com sucesso")
+            }
+        });
+    }
+
+
 
 }
 

@@ -6,6 +6,7 @@ module.exports = app => {
     app.post('/veiculos', auth.verificaJWT, (req, res) => {
         const userId =  req.userId;
         const veiculo = {...req.body, userId};
+        console.log(veiculo);
         veiculos.adiciona(veiculo, res);
     });
 

@@ -4,10 +4,10 @@ const moment = require('moment');
 class Oficina {
     
     adiciona(oficina, res) {
-        const { nome, email, cpf_cnpj, senha, estado, cidade, cep, bairro, logradouro, complemento, servicos, telefone } = oficina;
+        const { nome, email, cpf_cnpj, senha, estado, cidade, cep, bairro, logradouro, complemento, servicos, telefone, logo } = oficina;
 
         const data_cad = moment().format('YYYY-MM-DD hh:mm:ss');
-        const oficinaDatada = { nome, email, cpf_cnpj, senha, estado, cidade, cep, bairro, logradouro, complemento, telefone, data_cad };
+        const oficinaDatada = { nome, email, cpf_cnpj, senha, estado, cidade, cep, bairro, logradouro, complemento, telefone, logo, data_cad };
 
         //Verifica se existe alguma oficina cadastrada com o email informado
         let sql = `SELECT * FROM oficinas WHERE oficinas.EMAIL = ?`;
@@ -17,7 +17,7 @@ class Oficina {
                 res.status(400).json(erro)
             } else {
                 if (resultados.length > 0) {
-                    res.status(400).json({ msg: "Já existe uma oficina cadastrada, com o email informado.", status: 400 })
+                    res.status(400).json({ msg: "Já existe uma oficina cadastrada com o email informado.", status: 400 })
                 } else {
                     //Cadastro das oficinas
                     sql = `INSERT INTO oficinas SET ?`;
@@ -31,7 +31,10 @@ class Oficina {
                                 let oficina_servicos = []
 
                                 if (id_oficina !== 0) {
-                                    servicos.map(servico => {
+
+                                    const arrayOficina = servicos.split(',');
+
+                                    arrayOficina.map(servico => {
                                         oficina_servicos.push([id_oficina, servico])
                                     })
                                 }
@@ -44,6 +47,7 @@ class Oficina {
                                         res.status(400).json(erro);
                                     } else {
                                         res.status(200).json({ msg: "Oficina cadastrada com sucesso", status: 200 });
+                                        
                                     }
                                 })
 
@@ -83,8 +87,8 @@ class Oficina {
         GROUP_CONCAT(servicos.id ORDER BY servicos.nome desc) AS servico_id, 
         GROUP_CONCAT(servicos.nome) AS servico_nome
         FROM oficinas
-        INNER JOIN oficinasxservicos ON oficinas.id = oficinasxservicos.id_oficina
-        INNER JOIN servicos ON oficinasxservicos.id_servico = servicos.id
+        LEFT JOIN oficinasxservicos ON oficinas.id = oficinasxservicos.id_oficina
+        LEFT JOIN servicos ON oficinasxservicos.id_servico = servicos.id
         WHERE oficinas.id = ?
         `;
         conexao.query(sql, [id], (erro, resultados) => {
@@ -161,6 +165,74 @@ class Oficina {
         INNER JOIN veiculos ON atendimentos.id_veiculo = veiculos.id
         INNER JOIN oficinas ON atendimentos.id_oficina = oficinas.id
         WHERE oficinas.id =  ? ORDER BY ordem_servicos.id DESC `;
+
+        conexao.query(sql, [id_oficina], (erro, resultados) => {
+            if(erro) {
+                res.status(400).json({status: 400, msg: erro});
+            } else {
+                res.status(200).json({status: 200, resultados});
+            }
+        })
+    }
+
+    listaPedidos(id_oficina, res) {
+        const sql = `SELECT usuarios.nome as cliente, DATE_FORMAT(pedidos.data,'%d/%m/%Y')  as data_solicitacao, pedidos.forma_pagamento, pedidos.forma_envio, 
+        GROUP_CONCAT(" ", items_pedidos.nome, " ", items_pedidos.preco_unitario) as items_pedidos 
+        FROM pedidos
+        LEFT JOIN usuarios on usuarios.id = pedidos.id_usuario
+        LEFT JOIN items_pedidos ON items_pedidos.id_pedido = pedidos.id
+        WHERE pedidos.id_oficina = ?
+        GROUP BY pedidos.id`;
+
+        conexao.query(sql, [id_oficina], (erro, resultados) => {
+            if(erro) {
+                res.status(400).json({status: 400, msg: erro});
+            } else {
+                res.status(200).json({status: 200, resultados});
+            }
+        })
+    }
+
+    adicionarProdutos(id_oficina, produto, res) {
+
+        const {image, nome, preco, quantidade, descricao} = produto;
+        const data_cad = moment().format('YYYY-MM-DD hh:mm:ss');
+
+        const produtoDatado = {image, nome, preco, quantidade, descricao, data_cad, id_oficina};
+
+        let sql = `SELECT * FROM produtos WHERE produtos.nome = ? and produtos.id_oficina = ?`;
+
+        conexao.query(sql, [nome, id_oficina], (erro, resultados) => {
+            if (erro) {
+                res.status(400).json(erro)
+            } else {
+                if (resultados.length > 0) {
+                    res.status(400).json({ msg: "Já existe um produto cadastrado com o nome informado.", status: 400 })
+                } else {
+                    //Cadastro das oficinas
+                    sql = `INSERT INTO produtos SET ?`;
+                    conexao.query(sql, produtoDatado, (erro, resultados) => {
+                        if (erro) {
+                            res.status(400).json(erro);
+                        } else {
+                            if (resultados.insertId > 0) {
+                                //Recuperando o id da ultima oficina cadastrada
+                                const id_produto = resultados.insertId;
+                                //console.log(id_produto , id_oficina);
+
+                                res.status(200).json({ msg: "Produto cadastrado com sucesso", status: 200 });
+
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+
+    listaProdutosPorIdOficina(id_oficina, res) {
+        const sql = `SELECT * FROM produtos WHERE produtos.id_oficina = ? ORDER BY produtos.id DESC`;
 
         conexao.query(sql, [id_oficina], (erro, resultados) => {
             if(erro) {

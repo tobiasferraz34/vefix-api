@@ -73,7 +73,7 @@ class Usuario {
     listaVeiculos(id_usuario, res) {
         const sql = `SELECT veiculos.id, veiculos.ano, veiculos.anoModelo, 
         veiculos.chassi, veiculos.cor, veiculos.marca, veiculos.modelo,
-        veiculos.municipio, veiculos.placa, veiculos.situacao,
+        veiculos.municipio, veiculos.placa, veiculos.situacao,  veiculos.motorizacao,
         veiculos.uf, veiculos.data_cad
         FROM usuarios 
         INNER JOIN usuariosxveiculos ON usuarios.id = usuariosxveiculos.id_usuario
