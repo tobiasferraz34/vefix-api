@@ -51,6 +51,12 @@ class Tabelas {
             senha varchar(255) NOT NULL DEFAULT '0',
             data_cad datetime NOT NULL,
             nivel_acesso INT NOT NULL DEFAULT '1',
+            estado	varchar(255) NULL DEFAULT '0',
+            cidade	varchar(255) NULL DEFAULT '0',
+            cep	varchar(255) NULL DEFAULT '0',
+            bairro	varchar(255) NULL DEFAULT '0',
+            logradouro	varchar(255) NULL DEFAULT '0',
+            complemento	varchar(255) NULL DEFAULT '0',	
             PRIMARY KEY(id)
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`
 
@@ -239,7 +245,7 @@ class Tabelas {
         const sql = `CREATE TABLE IF NOT EXISTS produtos (
             id INT NOT NULL AUTO_INCREMENT,
             nome varchar(50) NULL DEFAULT '0',
-            preco double NOT NULL DEFAULT '0',
+            preco double NOT NULL DEFAULT 0,
             quantidade int NOT NULL DEFAULT '0',
             descricao text NOT NULL DEFAULT '0',
             image text NOT NULL DEFAULT '0',
