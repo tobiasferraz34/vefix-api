@@ -26,7 +26,7 @@ class Auth {
                             nivelAcesso = usuario.nivel_acesso
                         });
 
-                        const token = jwt.sign({ id, nivelAcesso }, process.env.SECRET, {
+                        const token = jwt.sign({ id, nivelAcesso, email }, process.env.SECRET, {
                             expiresIn: '1h' // expires in 5min
                         });
 
@@ -34,7 +34,6 @@ class Auth {
                     } else {
                         res.status(400).json({ status: 400, msg: "Verifique se o seu email, senha ou nivel de acesso estão corretos!" });
                     }
-
                 }
             });
         }
@@ -65,8 +64,6 @@ class Auth {
                 }
             })
         }
-
-    
     }
 
     verificaJWT(req, res, next) {
@@ -76,11 +73,12 @@ class Auth {
             res.status(401).send({ auth: false, message: 'Acesso Restrito.' });
         } else {
             jwt.verify(token, process.env.SECRET, function (err, decoded) {
-                if (err) return res.status(500).send({ auth: false, message: 'Token Inválido.' });
+                if (err) return res.status(500).send({ auth: false, message: 'Token Inválido.', status: 500 });
     
                 // se tudo estiver ok, salva no request para uso posterior
                 req.userId = decoded.id;
                 req.nivelAcesso = decoded.nivelAcesso
+                req.email = decoded.email
                 
                 next();
             });

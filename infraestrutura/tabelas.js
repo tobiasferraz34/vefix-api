@@ -244,11 +244,11 @@ class Tabelas {
     criarProdutos() {
         const sql = `CREATE TABLE IF NOT EXISTS produtos (
             id INT NOT NULL AUTO_INCREMENT,
-            nome varchar(50) NULL DEFAULT '0',
+            nome varchar(255) NULL DEFAULT '0',
             preco double NOT NULL DEFAULT 0,
             quantidade int NOT NULL DEFAULT '0',
-            descricao text NOT NULL DEFAULT '0',
-            image text NOT NULL DEFAULT '0',
+            descricao text NOT NULL,
+            image text NOT NULL,
             data_cad DATETIME NOT NULL,
             id_oficina	int NULL,
             PRIMARY KEY (id)

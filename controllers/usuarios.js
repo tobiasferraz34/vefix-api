@@ -39,4 +39,10 @@ module.exports = app => {
         Usuario.altera(id, valores, res);
     })
 
+    app.get('/usuarios/:id/pedidos', auth.verificaJWT, (req, res) => {
+        //console.log(req.params.id);
+        const id_usuario = req.params.id;
+        Usuario.listaPedidos(id_usuario, res);
+    });
+
 }

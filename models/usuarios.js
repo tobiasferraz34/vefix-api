@@ -116,6 +116,26 @@ class Usuario {
         });
     }
 
+    listaPedidos(id_usuario, res) {
+        const sql = `SELECT GROUP_CONCAT(DISTINCT enderecos_entregas.logradouro, ", ", enderecos_entregas.bairro, ", ", enderecos_entregas.cidade, ", ", enderecos_entregas.estado, ", ", enderecos_entregas.cep) AS endereco_entrega,
+        DATE_FORMAT(pedidos.data,'%d/%m/%Y') as data_solicitacao, pedidos.forma_pagamento, pedidos.forma_envio, pedidos.total, GROUP_CONCAT(items_pedidos.nome, "") as itens_pedidos, 
+        sum(items_pedidos.quantidade) as quantidade_itens
+        FROM pedidos 
+        LEFT JOIN usuarios on usuarios.id = pedidos.id_usuario 
+        LEFT JOIN items_pedidos ON items_pedidos.id_pedido = pedidos.id 
+        LEFT JOIN enderecos_entregas ON enderecos_entregas.id_pedido = pedidos.id 
+        WHERE usuarios.id = ?
+        GROUP BY pedidos.id
+        ORDER BY pedidos.id DESC`;
+        conexao.query(sql, [id_usuario], (erro, resultados) => {
+            if (erro) {
+                res.status(400).json({status: 400, msg: erro});
+            } else {
+                res.status(200).json({status: 200, resultados});
+            }
+        });
+    }
+
 
 }
 

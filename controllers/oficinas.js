@@ -23,25 +23,28 @@ module.exports = app => {
         Oficina.buscaPorId(req.userId, res);
     });
 
-    app.post('/oficinas', upload.single('image') ,(req, res) => {
+    app.post('/oficinas', (req, res) => {
         const oficina = req.body;
-        //console.log(req.body, req.file);
+        console.log(req.body, req.file);
         //const image = req.file.originalname;
         Oficina.adiciona(oficina, res);
     });
 
-    app.get('/oficinas', Auth.verificaJWT, (req, res) => {
-        if(Auth.verificaNivelAcesso(req.nivelAcesso, niveisAcesso.admin)) {
-            res.status(401).send({ auth: false, message: 'Você não possui permissão' });
-        } 
-        
-        Oficina.lista(res)
-        
+    app.get('/oficinas', (req, res) => {
+        // if(Auth.verificaNivelAcesso(req.nivelAcesso, niveisAcesso.admin)) {
+        //     res.status(401).send({ auth: false, message: 'Você não possui permissão' });
+        // }
+        Oficina.lista(res);
     });
 
     app.get('/oficinas/:id/produtos', Auth.verificaJWT, (req, res) => {
         const id_oficina = req.userId;
         Oficina.listaProdutosPorIdOficina(id_oficina, res);
+    });
+
+    app.get('/oficinas/:id/clientes', Auth.verificaJWT, (req, res) => {
+        const id_oficina = req.userId;
+        Oficina.listaClientesPorIdOficina(id_oficina, res);
     });
 
     app.get('/oficinas/:id/atendimentos', Auth.verificaJWT, (req, res) => {     
@@ -78,5 +81,5 @@ module.exports = app => {
     });
 
     
-    
+
 }
