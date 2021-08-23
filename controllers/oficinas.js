@@ -1,21 +1,6 @@
 const Oficina = require('../models/oficinas')
 const Auth = require('../models/auth');
-const niveisAcesso = require('../services/niveisAcesso');
-
-const multer = require('multer');
-const { oficina } = require('../services/niveisAcesso');
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/oficinas/logos');
-    },
-    filename: (req, file, cb) => {
-        cb(null, file.originalname);
-    }
-});
-
-const upload = multer({storage});
-
+const oficinas = require('../models/oficinas');
 
 module.exports = app => {
 
@@ -25,20 +10,24 @@ module.exports = app => {
 
     app.post('/oficinas', (req, res) => {
         const oficina = req.body;
-        console.log(req.body, req.file);
-        //const image = req.file.originalname;
+        console.log(req.body);
         Oficina.adiciona(oficina, res);
     });
 
-    app.get('/oficinas', (req, res) => {
-        // if(Auth.verificaNivelAcesso(req.nivelAcesso, niveisAcesso.admin)) {
-        //     res.status(401).send({ auth: false, message: 'Você não possui permissão' });
-        // }
-        Oficina.lista(res);
+    app.put('/oficinas/:id', Auth.verificaJWT, (req, res) => {
+        const id_oficina = req.params.id;
+        const valores = req.body;
+        Oficina.altera(id_oficina, valores, res);
     });
 
-    app.get('/oficinas/:id/produtos', Auth.verificaJWT, (req, res) => {
-        const id_oficina = req.userId;
+    app.get('/oficinas', (req, res) => {
+        if(req.query.nome) return Oficina.buscaPorNome(req.query.nome, res);
+
+        oficinas.lista(res);
+    });
+
+    app.get('/oficinas/:id/produtos', (req, res) => {
+        const id_oficina = req.params.id;
         Oficina.listaProdutosPorIdOficina(id_oficina, res);
     });
 

@@ -3,6 +3,7 @@ const moment = require('moment');
 
 class Oficina {
   adiciona(oficina, res) {
+
     const {
       nome,
       email,
@@ -86,6 +87,34 @@ class Oficina {
               }
             }
           });
+        }
+      }
+    });
+  }
+
+  altera(id, valores, res) {
+    
+  } 
+
+  buscaPorNome(nome, res) {
+    const sql = `SELECT distinct oficinas.id as id_oficina, oficinas.nome as nome_oficina, oficinas.email, oficinas.estado, oficinas.cidade, oficinas.cep, 
+    oficinas.bairro, oficinas.logradouro, oficinas.logo, oficinas.telefone, oficinas.publicTokenStripe, GROUP_CONCAT(servicos.nome, " ") AS servicos
+    FROM oficinas 
+    INNER JOIN oficinasxservicos ON oficinas.id = oficinasxservicos.id_oficina
+    INNER JOIN servicos ON oficinasxservicos.id_servico = servicos.id
+    WHERE oficinas.nome = ?
+    GROUP BY oficinas.id`;
+
+    conexao.query(sql, [nome], (erro, resultados) => {
+      if (erro) {
+        res.status(400).json(erro);
+      } else {
+        if (resultados.length > 0) {
+          res.status(200).json({ status: 200, resultado: resultados[0] });
+        } else {
+          res
+            .status(400)
+            .json({ msg: 'Nenhum resultado encontrado.', status: 400 });
         }
       }
     });
