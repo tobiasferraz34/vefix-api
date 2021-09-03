@@ -9,13 +9,14 @@ module.exports = () => {
 
   //http://localhost:3000
   //origin: 'http://vefix-com-br.umbler.net'
-  app.use(cors({ origin: 'https://vefixapp.surge.sh', credentials: true }));
+  app.use(cors({ origin: 'https://vefixapp.surge.sh/', credentials: true }));
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
   
   app.use('/uploads', express.static('uploads'));
   consign().include('controllers').into(app);
+  consign().include('helpers').into(app);
 
   return app;
 };

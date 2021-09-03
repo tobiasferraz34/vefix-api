@@ -3,7 +3,6 @@ const moment = require('moment');
 
 class Oficina {
   adiciona(oficina, res) {
-
     const {
       nome,
       email,
@@ -19,7 +18,7 @@ class Oficina {
       telefone,
       logo,
       publicTokenStripe,
-      privateTokenStripe
+      privateTokenStripe,
     } = oficina;
 
     const data_cad = moment().format('YYYY-MM-DD hh:mm:ss');
@@ -38,7 +37,7 @@ class Oficina {
       logo,
       publicTokenStripe,
       privateTokenStripe,
-      data_cad
+      data_cad,
     };
 
     //Verifica se existe alguma oficina cadastrada com o email informado
@@ -93,8 +92,78 @@ class Oficina {
   }
 
   altera(id, valores, res) {
-    
-  } 
+    console.log(id, valores);
+
+    const {
+      nome,
+      email,
+      cpf_cnpj,
+      senha,
+      estado,
+      cidade,
+      cep,
+      bairro,
+      logradouro,
+      complemento,
+      servicos,
+      telefone,
+      logo,
+      publicTokenStripe,
+      privateTokenStripe,
+    } = valores;
+
+    const oficina = {
+      nome,
+      email,
+      cpf_cnpj,
+      senha,
+      estado,
+      cidade,
+      cep,
+      bairro,
+      logradouro,
+      complemento,
+      telefone,
+      logo,
+      publicTokenStripe,
+      privateTokenStripe
+    };
+
+    let sql = 'UPDATE oficinas SET ? WHERE id = ?';
+    conexao.query(sql, [oficina, id], (erro, resultados) => {
+      if (erro) {
+        res.status(400).json({ status: 400, msg: erro });
+      } else {
+        sql = 'DELETE FROM oficinasxservicos WHERE id_oficina = ?';
+
+        conexao.query(sql, id, (erro, resultados) => {
+          if (erro) {
+            res.status(400).json();
+          } else {
+            let oficina_servicos = [];
+
+            servicos.map((servico) => {
+              oficina_servicos.push([id, servico]);
+            });
+
+            //Matrizes aninhadas de elementos [ [15, 3], [15, 4] ]
+            //oficina_servicos é uma matriz de matrizes agrupadas em uma matriz
+            sql = `INSERT INTO oficinasxservicos (id_oficina, id_servico) VALUES ?`;
+            conexao.query(sql, [oficina_servicos], (erro, resultados) => {
+              if (erro) {
+                res.status(400).json(erro);
+              } else {
+                res.status(200).json({
+                  msg: 'Oficina atualizada com sucesso',
+                  status: 200,
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+  }
 
   buscaPorNome(nome, res) {
     const sql = `SELECT distinct oficinas.id as id_oficina, oficinas.nome as nome_oficina, oficinas.email, oficinas.estado, oficinas.cidade, oficinas.cep, 
@@ -124,7 +193,7 @@ class Oficina {
   lista(res) {
     const sql = `SELECT oficinas.id, oficinas.nome, oficinas.email, oficinas.cpf_cnpj, 
         oficinas.cep, oficinas.estado, oficinas.cidade, oficinas.bairro,oficinas.logradouro, 
-        oficinas.telefone, oficinas.logo, GROUP_CONCAT(servicos.id ORDER BY servicos.id) AS id_servicos, 
+        oficinas.telefone, oficinas.logo, oficinas.publicTokenStripe, oficinas.privateTokenStripe, GROUP_CONCAT(servicos.id ORDER BY servicos.id) AS id_servicos, 
         GROUP_CONCAT(servicos.nome) AS servicos, 
          date_format(oficinas.data_cad, '%d/%m/%y Às %Hh%i') AS data_cad
         FROM oficinas 
@@ -292,7 +361,7 @@ class Oficina {
       largura,
       diametro,
       descricao,
-      data_cad
+      data_cad,
     };
 
     let sql = `SELECT produtos.id FROM produtos WHERE produtos.nome = ?`;
@@ -314,26 +383,30 @@ class Oficina {
             } else {
               if (resultados.length > 0) {
                 //console.log(resultados);
-                res
-                  .status(400)
-                  .json({
-                    msg: 'Já existe um produto cadastrado com o nome informado.',
-                    status: 400,
-                  });
+                res.status(400).json({
+                  msg: 'Já existe um produto cadastrado com o nome informado.',
+                  status: 400,
+                });
               } else {
                 sql = `INSERT INTO produtosxoficinas (id_produto, id_oficina) VALUES (?, ?);`;
-                conexao.query(sql, [id_produto, id_oficina], (erro, resultados) => {
-                if (erro) {
-                    res.status(400).json(erro);
-                } else {
-                    if (resultados.insertId > 0) {
-            
-                    //console.log(resultados.insertId);
+                conexao.query(
+                  sql,
+                  [id_produto, id_oficina],
+                  (erro, resultados) => {
+                    if (erro) {
+                      res.status(400).json(erro);
+                    } else {
+                      if (resultados.insertId > 0) {
+                        //console.log(resultados.insertId);
 
-                    res.status(200).json({ msg: "Produto cadastrado com sucesso", status: 200 });
+                        res.status(200).json({
+                          msg: 'Produto cadastrado com sucesso',
+                          status: 200,
+                        });
+                      }
                     }
-                }
-                });
+                  }
+                );
               }
             }
           });
@@ -349,18 +422,24 @@ class Oficina {
                 const id_produto = resultados.insertId;
                 //console.log(id_produto , id_oficina);
                 sql = `INSERT INTO produtosxoficinas (id_produto, id_oficina) VALUES (?, ?);`;
-                conexao.query(sql, [id_produto, id_oficina], (erro, resultados) => {
+                conexao.query(
+                  sql,
+                  [id_produto, id_oficina],
+                  (erro, resultados) => {
                     if (erro) {
-                        res.status(400).json(erro);
+                      res.status(400).json(erro);
                     } else {
-                        if (resultados.insertId > 0) {
-                
+                      if (resultados.insertId > 0) {
                         //console.log(resultados.insertId);
 
-                        res.status(200).json({ msg: "Produto cadastrado com sucesso", status: 200 });
-                        }
+                        res.status(200).json({
+                          msg: 'Produto cadastrado com sucesso',
+                          status: 200,
+                        });
+                      }
                     }
-                });
+                  }
+                );
               }
             }
           });

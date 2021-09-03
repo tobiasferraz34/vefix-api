@@ -22,7 +22,6 @@ module.exports = app => {
 
     app.get('/oficinas', (req, res) => {
         if(req.query.nome) return Oficina.buscaPorNome(req.query.nome, res);
-
         oficinas.lista(res);
     });
 

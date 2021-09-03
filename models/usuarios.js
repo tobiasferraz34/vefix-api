@@ -1,6 +1,5 @@
 const moment = require('moment');
 const conexao = require('../infraestrutura/conexao');
-let jwt = require('jsonwebtoken');
 
 class Usuario {
 
